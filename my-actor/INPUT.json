@@ -1,0 +1,26 @@
+{
+  "startUrls": [
+    {
+      "url": "https://www.allianz.de/auto/kfz-versicherung/rechner/"
+    }
+  ],
+  "salutation": "Frau",
+  "firstName": "Anna",
+  "lastName": "Müller", 
+  "birthDate": "15.03.1990",
+  "street": "Friedrichstraße 45",
+  "zipCode": "80331",
+  "city": "München",
+  "email": "anna.mueller@email.de",
+  "phone": "089-98765432",
+  "vehicleMake": "BMW",
+  "vehicleModel": "X3",
+  "firstRegistration": "15.06.2021",
+  "licensePlate": "M-AB 5678",
+  "vehicleValue": "45000",
+  "annualMileage": "12000", 
+  "insuranceType": "Vollkasko",
+  "previousInsurer": "HUK-COBURG",
+  "claimFreeYears": "8",
+  "desiredStartDate": "01.07.2024"
+} 

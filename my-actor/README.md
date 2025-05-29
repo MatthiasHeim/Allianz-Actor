@@ -1,105 +1,199 @@
-# JavaScript PuppeteerCrawler Actor template
+# Allianz Auto Insurance Quote Actor
 
-This template is a production ready boilerplate for developing with `PuppeteerCrawler`. The `PuppeteerCrawler` provides a simple framework for parallel crawling of web pages using headless Chrome with Puppeteer. Since `PuppeteerCrawler` uses headless Chrome to download web pages and extract data, it is useful for crawling of websites that require to execute JavaScript.
+This actor automates the process of filling out and submitting auto insurance quote forms on the Allianz website. It can analyze form structures, input customer data, and attempt to retrieve insurance quotes.
 
-If you're looking for examples or want to learn more visit:
+## Features
 
-- [Crawlee + Apify Platform guide](https://crawlee.dev/docs/guides/apify-platform)
-- [Examples](https://crawlee.dev/docs/examples/puppeteer-crawler)
+- **Form Analysis**: Automatically detects and analyzes form fields on the Allianz quote page
+- **Data Input**: Fills out personal, vehicle, and insurance information
+- **Screenshot Capture**: Takes screenshots before and after form submission for debugging
+- **Flexible Configuration**: Supports custom data input through actor configuration
+- **Error Handling**: Robust error handling with detailed logging
 
-## Included features
+## Input Configuration
 
-- **[Puppeteer Crawler](https://crawlee.dev/api/puppeteer-crawler/class/PuppeteerCrawler)** - simple framework for parallel crawling of web pages using headless Chrome with Puppeteer
-- **[Configurable Proxy](https://crawlee.dev/docs/guides/proxy-management#proxy-configuration)** - tool for working around IP blocking
-- **[Input schema](https://docs.apify.com/platform/actors/development/input-schema)** - define and easily validate a schema for your Actor's input
-- **[Dataset](https://docs.apify.com/sdk/js/docs/guides/result-storage#dataset)** - store structured data where each object stored has the same attributes
-- **[Apify SDK](https://docs.apify.com/api/client/js/)** - toolkit for building Actors
+The actor accepts the following input parameters:
 
-## How it works
+### Start URLs
+- **Default**: `https://www.allianz.de/auto/kfz-versicherung/rechner/`
+- You can specify different URLs if needed
 
-1. `Actor.getInput()` gets the input from `INPUT.json` where the start urls are defined
-2. Create a configuration for proxy servers to be used during the crawling with `Actor.createProxyConfiguration()` to work around IP blocking. Use Apify Proxy or your own Proxy URLs provided and rotated according to the configuration. You can read more about proxy configuration [here](https://crawlee.dev/api/core/class/ProxyConfiguration).
-3. Create an instance of Crawlee's Puppeteer Crawler with `new PuppeteerCrawler()`. You can pass [options](https://crawlee.dev/api/puppeteer-crawler/interface/PuppeteerCrawlerOptions) to the crawler constructor as:
-    - `proxyConfiguration` - provide the proxy configuration to the crawler
-    - `requestHandler` - handle each request with custom router defined in the `routes.js` file.
-4. Handle requests with the custom router from `routes.js` file. Read more about custom routing for the Cheerio Crawler [here](https://crawlee.dev/api/puppeteer-crawler/function/createPuppeteerRouter)
+### Personal Information (`personalData`)
+```json
+{
+  "salutation": "Herr",           // "Herr" or "Frau"
+  "firstName": "Max",
+  "lastName": "Mustermann",
+  "birthDate": "01.01.1985",      // Format: DD.MM.YYYY
+  "street": "Musterstraße 123",
+  "zipCode": "10115",
+  "city": "Berlin",
+  "email": "max.mustermann@example.com",
+  "phone": "030-12345678"
+}
+```
 
-    - Create a new router instance with `new createPuppeteerRouter()`
-    - Define default handler that will be called for all URLs that are not handled by other handlers by adding `router.addDefaultHandler(() => { ... })`
-    - Define additional handlers - here you can add your own handling of the page
+### Vehicle Information (`vehicleData`)
+```json
+{
+  "vehicleMake": "Volkswagen",
+  "vehicleModel": "Golf",
+  "firstRegistration": "01.01.2020",  // Format: DD.MM.YYYY
+  "licensePlate": "B-MW 1234",
+  "vehicleValue": "25000",             // EUR
+  "annualMileage": "15000"             // km per year
+}
+```
 
-        ```javascript
-        router.addHandler('detail', async ({ request, page, log }) => {
-            const title = await page.title();
-            // You can add your own page handling here
+### Insurance Information (`insuranceData`)
+```json
+{
+  "insuranceType": "Vollkasko",        // "Vollkasko", "Teilkasko", or "Haftpflicht"
+  "previousInsurer": "Keine Versicherung",
+  "claimFreeYears": "5",
+  "desiredStartDate": "01.01.2024"     // Format: DD.MM.YYYY
+}
+```
 
-            await Dataset.pushData({
-                url: request.loadedUrl,
-                title,
-            });
-        });
-        ```
+## Example Input
 
-5. `crawler.run(startUrls);` start the crawler and wait for its finish
+```json
+{
+  "startUrls": [
+    {
+      "url": "https://www.allianz.de/auto/kfz-versicherung/rechner/"
+    }
+  ],
+  "personalData": {
+    "salutation": "Frau",
+    "firstName": "Anna",
+    "lastName": "Schmidt",
+    "birthDate": "15.03.1990",
+    "street": "Hauptstraße 456",
+    "zipCode": "80331",
+    "city": "München",
+    "email": "anna.schmidt@example.com",
+    "phone": "089-98765432"
+  },
+  "vehicleData": {
+    "vehicleMake": "BMW",
+    "vehicleModel": "3er",
+    "firstRegistration": "01.06.2021",
+    "licensePlate": "M-AS 5678",
+    "vehicleValue": "35000",
+    "annualMileage": "12000"
+  },
+  "insuranceData": {
+    "insuranceType": "Vollkasko",
+    "previousInsurer": "HUK-COBURG",
+    "claimFreeYears": "3",
+    "desiredStartDate": "01.02.2024"
+  }
+}
+```
 
-## Resources
+## Output
 
-If you're looking for examples or want to learn more visit:
+The actor saves the following data to the dataset:
 
-- [Crawlee + Apify Platform guide](https://crawlee.dev/docs/guides/apify-platform)
-- [Documentation](https://crawlee.dev/api/playwright-crawler/class/PlaywrightCrawler) and [examples](https://crawlee.dev/docs/examples/playwright-crawler)
-- [Node.js tutorials](https://docs.apify.com/academy/node-js) in Academy
-- [How to scale Puppeteer and Playwright](https://blog.apify.com/how-to-scale-puppeteer-and-playwright/)
-- [Video guide on getting data using Apify API](https://www.youtube.com/watch?v=ViYYDHSBAKM)
-- [Integration with Make](https://apify.com/integrations), GitHub, Zapier, Google Drive, and other apps
-- A short guide on how to create Actors using code templates:
+```json
+{
+  "url": "https://www.allianz.de/auto/kfz-versicherung/rechner/",
+  "timestamp": "2024-01-15T10:30:00.000Z",
+  "formStructure": {
+    "forms": [...],      // Detected form elements
+    "inputs": [...]      // Detected input fields
+  },
+  "quoteResult": {
+    "filledFields": [...],    // Successfully filled fields
+    "submitResult": {         // Form submission result
+      "submitted": true,
+      "button": "button[type='submit']",
+      "hasResults": true,
+      "hasErrors": false
+    },
+    "formData": {...}         // Data used to fill the form
+  },
+  "inputData": {...}          // Original input configuration
+}
+```
 
-[web scraper template](https://www.youtube.com/watch?v=u-i-Korzf8w)
+## Running the Actor
 
+### Local Development
 
-## Getting started
+1. Install dependencies:
+```bash
+npm install
+```
 
-For complete information [see this article](https://docs.apify.com/platform/actors/development#build-actor-at-apify-console). In short, you will:
+2. Run with default data:
+```bash
+npm start
+```
 
-1. Build the Actor
-2. Run the Actor
+3. Run with custom input:
+```bash
+npm start -- --input='{"personalData":{"firstName":"Anna","lastName":"Schmidt"}}'
+```
 
-## Pull the Actor for local development
+### Production
 
-If you would like to develop locally, you can pull the existing Actor from Apify console using Apify CLI:
+Deploy to Apify platform and configure input through the web interface.
 
-1. Install `apify-cli`
+## Technical Details
 
-    **Using Homebrew**
+### Form Field Detection
 
-    ```bash
-    brew install apify-cli
-    ```
+The actor uses intelligent selectors to detect German insurance form fields:
 
-    **Using NPM**
+- **Personal fields**: `anrede`, `vorname`, `nachname`, `geburt`, `strasse`, `plz`, `ort`, `email`, `telefon`
+- **Vehicle fields**: `marke`, `modell`, `erstzulassung`, `kennzeichen`, `wert`, `kilometer`
+- **Insurance fields**: `schadenfreiheit`, `beginn`
 
-    ```bash
-    npm -g install apify-cli
-    ```
+### Browser Configuration
 
-2. Pull the Actor by its unique `<ActorId>`, which is one of the following:
+- **Headless mode**: Disabled for debugging (set to `true` for production)
+- **Screenshots**: Automatically captured for form analysis
+- **Proxy support**: Uses Apify proxy configuration
+- **Error handling**: Comprehensive error logging and recovery
 
-    - unique name of the Actor to pull (e.g. "apify/hello-world")
-    - or ID of the Actor to pull (e.g. "E2jjCZBezvAZnX8Rb")
+### Limitations
 
-    You can find both by clicking on the Actor title at the top of the page, which will open a modal containing both Actor unique name and Actor ID.
+- Currently optimized for the Allianz website structure
+- Requires valid German address and vehicle data
+- Form submission success depends on website availability and structure
+- Some dynamic form elements may require manual adjustment
 
-    This command will copy the Actor into the current directory on your local machine.
+## Troubleshooting
 
-    ```bash
-    apify pull <ActorId>
-    ```
+### Common Issues
 
-## Documentation reference
+1. **Form fields not found**: Check if the website structure has changed
+2. **Submission failed**: Verify that all required fields are properly filled
+3. **Timeout errors**: Increase wait times for slow-loading pages
+4. **Proxy issues**: Check proxy configuration and availability
 
-To learn more about Apify and Actors, take a look at the following resources:
+### Debug Mode
 
-- [Apify SDK for JavaScript documentation](https://docs.apify.com/sdk/js)
-- [Apify SDK for Python documentation](https://docs.apify.com/sdk/python)
-- [Apify Platform documentation](https://docs.apify.com/platform)
-- [Join our developer community on Discord](https://discord.com/invite/jyEM2PRvMU)
+Set `headless: false` in the launch options to see the browser in action and debug form filling issues.
+
+### Screenshots
+
+The actor automatically saves screenshots:
+- `allianz-form.png`: Initial form state
+- `before-submit.png`: Form state before submission
+- `after-submit.png`: Results page after submission
+
+## Contributing
+
+To extend this actor for other insurance providers:
+
+1. Create a new router file (e.g., `other-insurer-routes.js`)
+2. Implement provider-specific form field mappings
+3. Update the main.js file to use the appropriate router
+4. Test with the new provider's website
+
+## License
+
+This project is licensed under the ISC License.

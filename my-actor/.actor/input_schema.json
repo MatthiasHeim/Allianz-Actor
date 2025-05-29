@@ -1,18 +1,137 @@
 {
-    "title": "PuppeteerCrawler Template",
+    "title": "Allianz Auto Insurance Quote Actor",
     "type": "object",
     "schemaVersion": 1,
     "properties": {
         "startUrls": {
             "title": "Start URLs",
             "type": "array",
-            "description": "URLs to start with.",
+            "description": "URLs to start with (defaults to Allianz quote form).",
             "editor": "requestListSources",
             "prefill": [
                 {
-                    "url": "https://apify.com"
+                    "url": "https://www.allianz.de/auto/kfz-versicherung/rechner/"
                 }
             ]
+        },
+        "salutation": {
+            "type": "string",
+            "title": "Salutation",
+            "description": "Herr or Frau",
+            "default": "Herr",
+            "editor": "textfield"
+        },
+        "firstName": {
+            "type": "string",
+            "title": "First Name",
+            "default": "Max",
+            "editor": "textfield"
+        },
+        "lastName": {
+            "type": "string",
+            "title": "Last Name",
+            "default": "Mustermann",
+            "editor": "textfield"
+        },
+        "birthDate": {
+            "type": "string",
+            "title": "Birth Date",
+            "description": "Format: DD.MM.YYYY",
+            "default": "01.01.1985",
+            "editor": "textfield"
+        },
+        "street": {
+            "type": "string",
+            "title": "Street Address",
+            "default": "Musterstraße 123",
+            "editor": "textfield"
+        },
+        "zipCode": {
+            "type": "string",
+            "title": "ZIP Code",
+            "default": "10115",
+            "editor": "textfield"
+        },
+        "city": {
+            "type": "string",
+            "title": "City",
+            "default": "Berlin",
+            "editor": "textfield"
+        },
+        "email": {
+            "type": "string",
+            "title": "Email",
+            "default": "max.mustermann@example.com",
+            "editor": "textfield"
+        },
+        "phone": {
+            "type": "string",
+            "title": "Phone",
+            "default": "030-12345678",
+            "editor": "textfield"
+        },
+        "vehicleMake": {
+            "type": "string",
+            "title": "Vehicle Make",
+            "default": "Volkswagen",
+            "editor": "textfield"
+        },
+        "vehicleModel": {
+            "type": "string",
+            "title": "Vehicle Model",
+            "default": "Golf",
+            "editor": "textfield"
+        },
+        "firstRegistration": {
+            "type": "string",
+            "title": "First Registration",
+            "description": "Format: DD.MM.YYYY",
+            "default": "01.01.2020",
+            "editor": "textfield"
+        },
+        "licensePlate": {
+            "type": "string",
+            "title": "License Plate",
+            "default": "B-MW 1234",
+            "editor": "textfield"
+        },
+        "vehicleValue": {
+            "type": "string",
+            "title": "Vehicle Value (EUR)",
+            "default": "25000",
+            "editor": "textfield"
+        },
+        "annualMileage": {
+            "type": "string",
+            "title": "Annual Mileage (km)",
+            "default": "15000",
+            "editor": "textfield"
+        },
+        "insuranceType": {
+            "type": "string",
+            "title": "Insurance Type",
+            "description": "Vollkasko, Teilkasko, or Haftpflicht",
+            "default": "Vollkasko",
+            "editor": "textfield"
+        },
+        "previousInsurer": {
+            "type": "string",
+            "title": "Previous Insurer",
+            "default": "Keine Versicherung",
+            "editor": "textfield"
+        },
+        "claimFreeYears": {
+            "type": "string",
+            "title": "Claim-Free Years",
+            "default": "5",
+            "editor": "textfield"
+        },
+        "desiredStartDate": {
+            "type": "string",
+            "title": "Desired Start Date",
+            "description": "Format: DD.MM.YYYY",
+            "default": "01.09.2025",
+            "editor": "textfield"
         }
     }
 }
